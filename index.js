@@ -1,11 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const { default: mongoose } = require('mongoose');
 const userRoutes = require("./Routes/userRoutes")
 
 const app = express();
 dotenv.config();
 app.use(express.json());
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Server Creation
 const connectDb = async () => {

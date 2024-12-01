@@ -34,13 +34,14 @@ const registerController = expressAsyncHandler (async (req, res) => {
     //pre-existing user
     const userExist = await userModel.findOne({email});
     if(userExist){
-        throw  new Error("User already exist");
+        return res.status(405).json({message : "User already exist"});
+        // throw  new Error("User already exist");
     }
 
     //username already exist
     const usernameExist = await userModel.findOne({name});
     if(usernameExist){
-        throw  new Error("Username already exist");
+        return res.status(406).json({message : "Username already exist"});
     }
 
     //create a user in database
