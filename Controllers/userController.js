@@ -1,4 +1,4 @@
-const userModel = require("../Models/userModel");
+const UserModel = require("../Models/userModel");
 const expressAsyncHandler = require("express-async-handler");
 const generateToken = require("../config/generateToken");
 
@@ -6,7 +6,7 @@ const generateToken = require("../config/generateToken");
 // login
 const loginController = expressAsyncHandler(async (req, res) => {
     const { name , password} = req.body;
-    const user = await userModel.findOne({name});
+    const user = await UserModel.findOne({name});
 
     if(user && (await user.matchPassword(password))){
         const response = {
@@ -32,20 +32,20 @@ const registerController = expressAsyncHandler (async (req, res) => {
     }
 
     //pre-existing user
-    const userExist = await userModel.findOne({email});
+    const userExist = await UserModel.findOne({email});
     if(userExist){
         return res.status(405).json({message : "User already exist"});
         // throw  new Error("User already exist");
     }
 
     //username already exist
-    const usernameExist = await userModel.findOne({name});
+    const usernameExist = await UserModel.findOne({name});
     if(usernameExist){
         return res.status(406).json({message : "Username already exist"});
     }
 
     //create a user in database
-    const  user = await userModel.create({ name , email, password})
+    const  user = await UserModel.create({ name , email, password})
     if(user){
         res.status(201).json({
             _id :  user._id,
@@ -60,5 +60,24 @@ const registerController = expressAsyncHandler (async (req, res) => {
     }
 })
 
-
-module.exports = {loginController , registerController}
+const fetchAllUsersController = expressAsyncHandler(async (req, res) => {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+  
+    const users = await UserModel.find(keyword).find({
+      _id: { $ne: req.user._id },
+    });
+    res.send(users);
+  });
+  
+  module.exports = {
+    loginController,
+    registerController,
+    fetchAllUsersController,
+  };
