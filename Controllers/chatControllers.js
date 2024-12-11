@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const Chat = require("../Models/chatModel");
 const User = require("../Models/userModel");
 
+
+// one to one chat
 const accessChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
@@ -48,6 +50,7 @@ const accessChat = asyncHandler(async (req, res) => {
   }
 });
 
+// fetch alll chats
 const fetchChats = asyncHandler(async (req, res) => {
   try {
     console.log("Fetch Chats aPI : ", req);
@@ -69,6 +72,7 @@ const fetchChats = asyncHandler(async (req, res) => {
   }
 });
 
+// show all groups available
 const fetchGroups = asyncHandler(async (req, res) => {
   try {
     const allGroups = await Chat.where("isGroupChat").equals(true);
@@ -79,6 +83,7 @@ const fetchGroups = asyncHandler(async (req, res) => {
   }
 });
 
+// create group chat 
 const createGroupChat = asyncHandler(async (req, res) => {
   if (!req.body.users || !req.body.name) {
     return res.status(400).send({ message: "Data is insufficient" });
@@ -107,6 +112,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
   }
 });
 
+// exit grop 
 const groupExit = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
 
@@ -132,6 +138,7 @@ const groupExit = asyncHandler(async (req, res) => {
   }
 });
 
+// add yourself in a group
 const addSelfToGroup = asyncHandler(async (req, res) => {
     const {chatId , userId} = req.body;
 
