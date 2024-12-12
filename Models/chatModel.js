@@ -28,5 +28,5 @@ const chatModel = mongoose.Schema(
   }
 );
 
-const Chat = mongoose.Model("Chat", chatModel);
+const Chat = mongoose.model("Chat", chatModel);
 module.exports = Chat;
